@@ -1,25 +1,23 @@
 package com.example.urlshortener.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Date;
-//import org.springframework.data.annotation.Id;
 
 @Entity
 @Table(name = "URL")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
+@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Project {
+public class UrlEntity {
     @Id
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     @GeneratedValue(generator = "uuid")
@@ -28,16 +26,22 @@ public class Project {
 
     @Column(name = "long_url", nullable = false)
     String longUrl;
+
     @Column(name = "short_url", nullable = false)
     String shortUrl;
-    @Column(name = "totalHit", nullable = false)
+
+    @Column(name = "total_hit", nullable = false)
     BigDecimal totalHit;
+
     @Column(name = "created", nullable = false)
     Date created;
-    @Column(name = "updated", nullable = false)
+
+    @Column(name = "updated")
     Date updated;
-    @Column(name = "version", nullable = false)
-    BigDecimal version;
+
     @Column(name = "row_status", nullable = false)
     String rowStatus;
+
+    @Column(name = "sequence", nullable = false)
+    BigDecimal sequence;
 }
