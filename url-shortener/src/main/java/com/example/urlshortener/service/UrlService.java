@@ -42,7 +42,8 @@ public class UrlService {
 //        }
 //        System.out.println("integerOutput: " + integerOutput);
 //        BigInteger integerOutput = new BigInteger(output);
-        String base64Encoding = Base64.getUrlEncoder().encodeToString(uuid.getBytes());
+//        String base64Encoding = Base64.getUrlEncoder().encodeToString(uuid.getBytes());
+        String base64Encoding = Base64.getUrlEncoder().encodeToString(String.valueOf(System.currentTimeMillis()).getBytes());
         System.out.println("base64Encoding: " + base64Encoding);
         List<BigInteger> abc = new ArrayList<>();
         intUUID = BigInteger.valueOf(70);
