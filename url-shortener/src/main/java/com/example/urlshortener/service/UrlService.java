@@ -21,6 +21,7 @@ public class UrlService {
 
     private final UrlRepository urlRepository;
     private final RedisTemplate<String, Object> template;
+    private final String SYSTEM_DEFAULT_URL = "localhost/api/v1/";
 
     @Autowired
     public UrlService(UrlRepository urlRepository,
@@ -46,7 +47,7 @@ public class UrlService {
         String shortUrl = getShortUrl(entity.getId());
         entity.setShortUrl(shortUrl);
         urlRepository.save(entity);
-        return entity.getShortUrl();
+        return SYSTEM_DEFAULT_URL.concat(entity.getShortUrl());
     }
 
     @Cacheable(value = "url", key = "#shortUrl", unless = "#result.totalHit < 2")
