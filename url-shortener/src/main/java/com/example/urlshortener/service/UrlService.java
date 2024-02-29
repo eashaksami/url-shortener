@@ -4,6 +4,7 @@ import com.example.urlshortener.dto.UrlTemplateDto;
 import com.example.urlshortener.entity.UrlEntity;
 import com.example.urlshortener.models.UrlLongRequest;
 import com.example.urlshortener.reposityry.UrlRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -27,21 +28,19 @@ public class UrlService {
         this.template = template;
     }
 
+    @Transactional
     public String convertToShortUrl(UrlLongRequest request) {
-        UrlEntity maxUrlEntity = urlRepository.findTopByOrderBySequenceDesc();
-        BigDecimal sequence = BigDecimal.ONE;
-        if (maxUrlEntity != null) {
-            sequence = maxUrlEntity.getSequence().add(BigDecimal.ONE);
-        }
 
         UrlEntity entity = UrlEntity.builder()
                 .longUrl(request.getLongUrl())
                 .created(new Date())
                 .totalHit(BigDecimal.ZERO)
-                .shortUrl(getShortUrl(sequence.toBigInteger()))
+//                .shortUrl(getShortUrl(sequence.toBigInteger()))
                 .rowStatus("ACTIVE")
-                .sequence(sequence)
                 .build();
+        urlRepository.save(entity);
+        String shortUrl = getShortUrl(entity.getId());
+        entity.setShortUrl(shortUrl);
         urlRepository.save(entity);
         return entity.getShortUrl();
     }

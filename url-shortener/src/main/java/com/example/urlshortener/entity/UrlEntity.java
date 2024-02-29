@@ -3,10 +3,9 @@ package com.example.urlshortener.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.GenericGenerator;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 
 @Entity
@@ -19,15 +18,15 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UrlEntity {
     @Id
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @GeneratedValue(generator = "uuid")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "url_generator")
+    @SequenceGenerator(name = "url_generator", sequenceName = "url_seq", allocationSize = 1)
     @Column(name = "ID", nullable = false)
-    String id;
+    BigInteger id;
 
     @Column(name = "long_url", nullable = false)
     String longUrl;
 
-    @Column(name = "short_url", nullable = false)
+    @Column(name = "short_url")
     String shortUrl;
 
     @Column(name = "total_hit", nullable = false)
@@ -41,7 +40,4 @@ public class UrlEntity {
 
     @Column(name = "row_status", nullable = false)
     String rowStatus;
-
-    @Column(name = "sequence", nullable = false)
-    BigDecimal sequence;
 }

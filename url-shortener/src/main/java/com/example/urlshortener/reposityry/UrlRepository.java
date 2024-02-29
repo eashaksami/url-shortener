@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UrlRepository extends JpaRepository<UrlEntity, String> {
-    UrlEntity findTopByOrderBySequenceDesc();
 
     UrlEntity findByShortUrl(String shortUrl);
 }
