@@ -1,6 +1,7 @@
 package com.example.urlshortener.service;
 
 import com.example.urlshortener.dto.UrlTemplateDto;
+import com.example.urlshortener.entity.SchedulerJobEntity;
 import com.example.urlshortener.entity.UrlEntity;
 import com.example.urlshortener.models.UrlLongRequest;
 import com.example.urlshortener.reposityry.UrlRepository;
@@ -30,12 +31,15 @@ public class UrlService {
 
     @Transactional
     public String convertToShortUrl(UrlLongRequest request) {
+        UrlEntity existing = urlRepository.findByLongUrl(request.getLongUrl());
+        if(existing != null) {
+            return existing.getShortUrl();
+        }
 
         UrlEntity entity = UrlEntity.builder()
                 .longUrl(request.getLongUrl())
                 .created(new Date())
                 .totalHit(BigDecimal.ZERO)
-//                .shortUrl(getShortUrl(sequence.toBigInteger()))
                 .rowStatus("ACTIVE")
                 .build();
         urlRepository.save(entity);
@@ -63,7 +67,6 @@ public class UrlService {
     public String getShortUrl(BigInteger sequence) {
         System.out.println("sequence from parameter: " + sequence);
 
-// Converting to base58
         List<BigInteger> listBase58 = new ArrayList<>();
         while (!sequence.equals(BigInteger.ZERO)) {
             BigInteger temp = sequence.mod(BigInteger.valueOf(58));
@@ -73,7 +76,6 @@ public class UrlService {
         Collections.reverse(listBase58);
         System.out.println("list: " + listBase58);
 
-//creating hashmap
         HashMap<String, String> h1 = new HashMap<>() {{
             put("1", "a");
             put("2", "b");
@@ -139,10 +141,6 @@ public class UrlService {
             put("62", "9");
         }};
 
-        System.out.println("hashmap: " + h1);
-
-// Search in hashmap through
-
         String shortUrl = "";
 
         for (int i = 0; i < listBase58.size(); i++) {
@@ -157,6 +155,12 @@ public class UrlService {
         }
 
         System.out.println("short url: " + shortUrl);
+
+        while (shortUrl.length() < 7) {
+            Random random = new Random();
+            int rand = random.nextInt(62-1) + 1;
+            shortUrl = shortUrl.concat(h1.get(String.valueOf(rand)));
+        }
 
 // Concat if length is not enough
         int length = 7 - shortUrl.length();
